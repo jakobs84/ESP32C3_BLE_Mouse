@@ -3,7 +3,7 @@
 #include <Arduino.h>
 #include <BleMouse.h>
 
-BleMouse bleMouse("MX Master C3", "LOGI", 88);
+BleMouse bleMouse("MX Master C3", "LOGGII", 88);
 //long check1s = 0;
 long check2s = 0;
 int x3 = 0;
