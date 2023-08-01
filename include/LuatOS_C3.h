@@ -6,7 +6,7 @@
 #include <ArduinoOTA.h>
 //#include <TFT_eSPI.h>
 
-#define TZ 1            // 中国时区为8
+#define TZ 2            // Polsk 2 Chiny 8
 #define DST_MN 0        // 默认为0
 #define TZ_MN ((TZ)*60) //时间换算
 #define TZ_SEC ((TZ)*3600)
@@ -17,10 +17,10 @@
 
 /*
 // 4,5,8,9,13
-#define KEY_LEFT 9
-//#define KEY_RIGHT 13
+#define KEY_LEFT 5
+#define KEY_RIGHT 9
 #define KEY_UP 8
-#define KEY_DOWN 5
+#define KEY_DOWN 13
 #define KEY_CENTER 4
 
 uint8_t PIN_KEYS[] = {KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, KEY_CENTER};
