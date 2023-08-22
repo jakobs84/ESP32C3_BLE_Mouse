@@ -2,15 +2,17 @@
 #include <Credentials.h>
 #include <Arduino.h>
 #include <BleMouse.h>
+//#include <BleKeyboard.h>
 
+//BleKeyboard
 BleMouse bleMouse("MX Master C3", "LOGGII", 88);
 //long check1s = 0;
 long check2s = 0;
 int x3 = 0;
 
 void setup() {
-//  Serial.begin(115200);
-//  Serial.println("Hello ESP32C3!!");
+  Serial.begin(115200);
+  Serial.println("Hello ESP32C3!!");
   initLEDs();
   //initKeys();
   blinkk(5, 100, PIN_LED1);
@@ -23,11 +25,11 @@ void loop() {
   /*
   if (ms - check1s > 1000) {
     check1s = ms;
-    ArduinoOTA.handle();
+    ArduinoOTA.handle(); 
   }
   */
   if(bleMouse.isConnected()) {
-    if(ms - check2s > (200000 + x3)) {
+    if(ms - check2s > (4000 + x3)) {
         check2s = ms;
         int x1 = random(-60, 60);
         int x2 = random(-60, 60);
@@ -40,7 +42,9 @@ void loop() {
         delay(30);
         bleMouse.move(-x1, -x2);
         delay(30);
-        digitalWrite(PIN_LED1, LOW);    
+        digitalWrite(PIN_LED1, LOW);
+        //  Serial.println("Sending 'Hello world'...");
+        //  bleMouse.print("Hello world");    
     }
   }
 }
