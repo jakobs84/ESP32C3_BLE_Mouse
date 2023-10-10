@@ -2,49 +2,92 @@
 #include <Credentials.h>
 #include <Arduino.h>
 #include <BleMouse.h>
-//#include <BleKeyboard.h>
+#include <stdint.h>
 
-//BleKeyboard
-BleMouse bleMouse("MX Master C3", "LOGGII", 88);
-//long check1s = 0;
-long check2s = 0;
-int x3 = 0;
+#define DUMP 1
+int BLINK = 3; // 0 no blink, 1 - LED1 (MOVE), 2 - LED2 (Connection), 3 = 1+2;
 
-void setup() {
+BleMouse bleMouse("MX Master S3", "LOGGII", 33);
+
+unsigned long previousTime = 0; // Czas początkowy
+unsigned long interval = 0;     // Interwał czasowy -  losowy
+int x, y, r; // Zmienne x i y, r random opuźnienie
+int z = 10;  // opuźnienie stałe * 1000ms = s;  r = random(1, 9);  interval = (r + z) * 1000;
+
+
+void setup()
+{
+#ifdef DUMP
   Serial.begin(115200);
   Serial.println("Hello ESP32C3!!");
+#endif
   initLEDs();
-  //initKeys();
+  randomSeed(analogRead(0)); // Inicjalizacja generatora liczb losowych
+  // initKeys();
   blinkk(5, 100, PIN_LED1);
-  //autoConfigWifi();
+  // autoConfigWifi();
   bleMouse.begin();
 }
 
-void loop() {
-  auto ms = millis();
-  /*
-  if (ms - check1s > 1000) {
-    check1s = ms;
-    ArduinoOTA.handle(); 
-  }
-  */
-  if(bleMouse.isConnected()) {
-    if(ms - check2s > (4000 + x3)) {
-        check2s = ms;
-        int x1 = random(-60, 60);
-        int x2 = random(-60, 60);
-        x3 = random(1000, 2000);
-        x3 = x3 * (-1, 1 );  
+void loop()
+{
+  // auto ms = millis();
+  unsigned long currentTime = millis(); // Aktualny czas w milisekundach
+
+  if (bleMouse.isConnected())
+  {
+    if (BLINK == 2 || BLINK == 3)
+    {
+      digitalWrite(PIN_LED2, HIGH);
+    }
+
+    // Sprawdzamy, czy upłynął określony czas
+    if (currentTime - previousTime >= interval)
+    {
+      x = random(-60, 61);
+      y = random(-60, 61);
+      if (BLINK == 1 || BLINK == 3)
+      {
         blinkk(8, 120, PIN_LED1);
         digitalWrite(PIN_LED1, HIGH);
         delay(500);
-        bleMouse.move(x1, x2);
+        bleMouse.move(x, y);
         delay(30);
-        bleMouse.move(-x1, -x2);
+        bleMouse.move(-x, -y);
         delay(30);
         digitalWrite(PIN_LED1, LOW);
-        //  Serial.println("Sending 'Hello world'...");
-        //  bleMouse.print("Hello world");    
+      }
+      else
+      {
+        bleMouse.move(x, y);
+        delay(30);
+        bleMouse.move(-x, -y);
+        delay(30);
+      }
+
+      // Losujemy nowy interwał (czas oczekiwania)
+      r = random(1, 9);
+      interval = (r + z) * 1000;
+
+    #ifdef DUMP
+      Serial.print("x: ");
+      Serial.print(x);
+      Serial.print("\t y: ");
+      Serial.print(y);
+      Serial.print("\t Delay: ");
+      Serial.print(r);
+      Serial.print(" + ");
+      Serial.print(z);
+      Serial.println(" s");
+    #endif
+
+      // Aktualizujemy czas początkowy
+      previousTime = currentTime;
     }
+  }
+  else
+  {
+    if (BLINK == 2 || BLINK == 3)
+      digitalWrite(PIN_LED2, LOW);
   }
 }
