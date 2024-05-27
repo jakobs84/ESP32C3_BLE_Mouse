@@ -12,8 +12,13 @@
 #define TZ_SEC ((TZ)*3600)
 #define DST_SEC ((DST_MN)*60)
 
+#ifdef BOARDSuperMini
+#define PIN_LED1 8 //LED_BUILTIN 8
+#else 
 #define PIN_LED1 12
 #define PIN_LED2 13
+#endif
+
 
 /*
 // 4,5,8,9,13
@@ -65,6 +70,9 @@ void inline setupOTAConfig() {
   ArduinoOTA.begin();
 }
 */
+//#ifndef BOARDSuperMini // NEGACJA BOARDSuperMini
+
+/*
 void inline autoConfigWifi() {
   WiFi.mode(WIFI_MODE_STA);
   WiFi.disconnect();
@@ -90,6 +98,10 @@ void inline autoConfigWifi() {
     WiFi.mode(WIFI_MODE_STA);
   }
 }
+//#endif
+*/
+
+
 /*
 void inline initTFT() {
   tft.begin();
@@ -103,10 +115,20 @@ void inline initTFT() {
 }
 */
 void inline initLEDs() {
+ #ifdef BOARDSuperMini
+  pinMode(PIN_LED1, OUTPUT);
+  digitalWrite(PIN_LED1, LOW);
+#else 
   pinMode(PIN_LED1, OUTPUT);
   pinMode(PIN_LED2, OUTPUT);
   digitalWrite(PIN_LED1, LOW);
   digitalWrite(PIN_LED2, LOW);
+#endif
+
+//  pinMode(PIN_LED1, OUTPUT);
+//  pinMode(PIN_LED2, OUTPUT);
+//  digitalWrite(PIN_LED1, LOW);
+//  digitalWrite(PIN_LED2, LOW);
 }
 
 
